@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface AgendamentosRepository  extends JpaRepository<Agendamentos, UUID> {
 
-    List<Agendamentos> findByNomeClientes(String nomeCliente);
+    List<Agendamentos> findByNomeCliente(String nomeCliente);
 
     List<Agendamentos> findByData(LocalDate data);
 
