@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,19 +25,30 @@ public class Services {
         return  ResponseEntity.status(HttpStatus.OK).body(repository.findAll());
     }
 
-    public ResponseEntity<Object> findByData(@NotNull LocalDate data){
+    public ResponseEntity<Object> findByData( LocalDate data){
         return  ResponseEntity.status(HttpStatus.OK).body(repository.findByData(data));
     }
 
-   public  ResponseEntity<Object> create(@NotNull  Agendamentos agendamento){
-        if(agendamento.getData().getDayOfWeek() == DayOfWeek.SUNDAY || agendamento.getData().getDayOfWeek() == DayOfWeek.SATURDAY){
+   public  ResponseEntity<Object> create(  Agendamentos novoAgendamento){
+        if(novoAgendamento.getData().getDayOfWeek() == DayOfWeek.SUNDAY || novoAgendamento.getData().getDayOfWeek() == DayOfWeek.SATURDAY){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A barbearia não funciona aos finais de semana!");
         }
-        repository.save(agendamento);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(agendamento);
+       List<Agendamentos> agendamentosDia = repository.findByData(novoAgendamento.getData());
+        for(Agendamentos agendamentos : agendamentosDia){
+            long diferencaEmMinutos = ChronoUnit.MINUTES.between(
+                    agendamentos.getHorario(),
+                   novoAgendamento.getHorario()
+            );
+
+            if (Math.abs(diferencaEmMinutos) < 30) {
+                return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Já está reservado esse horário para outro cliente");
+            }
+        }
+        repository.save(novoAgendamento);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(novoAgendamento);
    }
 
-   public  ResponseEntity<Object> deleteById( @NotNull UUID id){
+   public  ResponseEntity<Object> deleteById( UUID id){
         repository.deleteById(id);
         return  ResponseEntity.status(HttpStatus.OK).body("Agendamento excluido com sucesso!");
    }
