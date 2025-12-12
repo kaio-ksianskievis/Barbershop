@@ -1,3 +1,6 @@
+/target/
 /out/
 .idea/
 *.iml
+*.log
+.mvn/wrapper/maven-wrapper.properties
