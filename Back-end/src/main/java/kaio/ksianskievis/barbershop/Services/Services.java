@@ -1,6 +1,5 @@
 package kaio.ksianskievis.barbershop.Services;
 
-import jakarta.validation.constraints.NotNull;
 import kaio.ksianskievis.barbershop.Model.Agendamentos;
 import kaio.ksianskievis.barbershop.Repository.AgendamentosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +20,17 @@ public class Services {
     private AgendamentosRepository repository;
 
 
-    public ResponseEntity<Object>  findAll(){
-        return  ResponseEntity.status(HttpStatus.OK).body(repository.findAll());
+    public List<Agendamentos> findAll(){
+        return repository.findAll();
     }
 
-    public ResponseEntity<Object> findByData( LocalDate data){
-        return  ResponseEntity.status(HttpStatus.OK).body(repository.findByData(data));
+    public List<Agendamentos> findByData( LocalDate data){
+        return  repository.findByData(data);
     }
 
-   public  ResponseEntity<Object> create(  Agendamentos novoAgendamento){
+   public  Agendamentos create(  Agendamentos novoAgendamento){
         if(novoAgendamento.getData().getDayOfWeek() == DayOfWeek.SUNDAY || novoAgendamento.getData().getDayOfWeek() == DayOfWeek.SATURDAY){
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A barbearia não funciona aos finais de semana!");
+            throw new IllegalArgumentException("A barbearia não funciona aos finais de semana!");
         }
        List<Agendamentos> agendamentosDia = repository.findByData(novoAgendamento.getData());
         for(Agendamentos agendamentos : agendamentosDia){
@@ -41,16 +40,18 @@ public class Services {
             );
 
             if (Math.abs(diferencaEmMinutos) < 30) {
-                return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Já está reservado esse horário para outro cliente");
+                throw new IllegalArgumentException("Já está reservado esse horário para outro cliente");
             }
         }
         repository.save(novoAgendamento);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(novoAgendamento);
+        return  novoAgendamento;
    }
 
-   public  ResponseEntity<Object> deleteById( UUID id){
+   public  void deleteById( UUID id){
+        if (!repository.existsById(id)) {
+            throw new IllegalArgumentException("ID não encontrado");
+        }
         repository.deleteById(id);
-        return  ResponseEntity.status(HttpStatus.OK).body("Agendamento excluido com sucesso!");
    }
 
 }
