@@ -30,6 +30,11 @@ public class AgendamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(services.findByData(data));
     }
 
+    @GetMapping("/horarios/{data}")
+    private  ResponseEntity<Object> getHorarios(@PathVariable @NotNull LocalDate data){
+        return  ResponseEntity.status(HttpStatus.OK).body(services.horariosLivres(data));
+    }
+
     @PostMapping("/agendamentos")
     private ResponseEntity<Object> postAgendamentos(@RequestBody @NotNull AgendamentoRecords data){
         try {

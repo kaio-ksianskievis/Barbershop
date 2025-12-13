@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +31,20 @@ public class Services {
     }
 
    public  Agendamentos create(  Agendamentos novoAgendamento){
+
+       LocalTime oitoDaManha = LocalTime.of(8,0);
+       LocalTime seisDaTarde = LocalTime.of(18,0);
+
         if(novoAgendamento.getData().getDayOfWeek() == DayOfWeek.SUNDAY || novoAgendamento.getData().getDayOfWeek() == DayOfWeek.SATURDAY){
             throw new IllegalArgumentException("A barbearia não funciona aos finais de semana!");
         }
-       List<Agendamentos> agendamentosDia = repository.findByData(novoAgendamento.getData());
+
+        if(novoAgendamento.getHorario().isBefore(oitoDaManha) || novoAgendamento.getHorario().isAfter(seisDaTarde)){
+            throw new IllegalArgumentException("A barbearia está fechada nesse horário!");
+        }
+
+        List<Agendamentos> agendamentosDia = repository.findByData(novoAgendamento.getData());
+
         for(Agendamentos agendamentos : agendamentosDia){
             long diferencaEmMinutos = ChronoUnit.MINUTES.between(
                     agendamentos.getHorario(),
@@ -43,6 +55,7 @@ public class Services {
                 throw new IllegalArgumentException("Já está reservado esse horário para outro cliente");
             }
         }
+
         repository.save(novoAgendamento);
         return  novoAgendamento;
    }
@@ -52,6 +65,29 @@ public class Services {
             throw new IllegalArgumentException("ID não encontrado");
         }
         repository.deleteById(id);
+   }
+
+   public List<LocalTime> horariosLivres(LocalDate data){
+
+       LocalTime inicio = LocalTime.of(8, 0);
+       LocalTime fim = LocalTime.of(18, 0);
+
+       List<LocalTime> todosHorarios = new ArrayList<>();
+       LocalTime atual = inicio;
+       while (atual.isBefore(fim)) {
+           todosHorarios.add(atual);
+           atual = atual.plusMinutes(30);
+       }
+
+       List<Agendamentos> agendamentosDoDia = repository.findByData(data);
+
+       List<LocalTime> horariosOcupados = agendamentosDoDia.stream()
+               .map(Agendamentos::getHorario)
+               .toList();
+
+       todosHorarios.removeAll(horariosOcupados);
+
+       return todosHorarios;
    }
 
 }
