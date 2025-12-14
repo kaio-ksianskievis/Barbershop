@@ -30,7 +30,7 @@ public class Services {
         return  repository.findByData(data);
     }
 
-   public  Agendamentos create(  Agendamentos novoAgendamento){
+   public  Agendamentos create( Agendamentos novoAgendamento){
 
        LocalTime oitoDaManha = LocalTime.of(8,0);
        LocalTime seisDaTarde = LocalTime.of(18,0);
@@ -39,7 +39,7 @@ public class Services {
             throw new IllegalArgumentException("A barbearia não funciona aos finais de semana!");
         }
 
-        if(novoAgendamento.getHorario().isBefore(oitoDaManha) || novoAgendamento.getHorario().isAfter(seisDaTarde)){
+        if(novoAgendamento.getHorario().isBefore(oitoDaManha) || novoAgendamento.getHorario().plusMinutes(30).isAfter(seisDaTarde)){
             throw new IllegalArgumentException("A barbearia está fechada nesse horário!");
         }
 
