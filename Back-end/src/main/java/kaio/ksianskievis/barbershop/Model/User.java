@@ -1,12 +1,8 @@
 package kaio.ksianskievis.barbershop.Model;
 
-
 import jakarta.persistence.*;
-import kaio.ksianskievis.barbershop.DTO.UserRoles;
-import lombok.AllArgsConstructor;
+import kaio.ksianskievis.barbershop.DTO.UserRole;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,37 +14,28 @@ import java.util.UUID;
 @Entity
 @Table(name = "usuarios")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private  String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
-    private String senha;
+    private  String password;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserRoles role;
+    private UserRole role;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRoles.ADMIN) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        } else {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if(this.role == UserRole.ADMIN){
+            return  List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
-    }
-
-    @Override
-    public @Nullable String getPassword() {
-        return this.senha;
+        return  List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override

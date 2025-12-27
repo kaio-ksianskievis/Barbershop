@@ -1,13 +1,14 @@
 package kaio.ksianskievis.barbershop.Controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import kaio.ksianskievis.barbershop.DTO.AgendamentoRecords;
-import kaio.ksianskievis.barbershop.Model.Agendamentos;
-import kaio.ksianskievis.barbershop.Services.Services;
-import org.springframework.beans.BeanUtils;
+import kaio.ksianskievis.barbershop.Model.Agendamento;
+import kaio.ksianskievis.barbershop.Services.AgendamentoServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,45 +19,36 @@ import java.util.UUID;
 public class AgendamentoController {
 
     @Autowired
-    private Services services;
+    private AgendamentoServices services;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/agendamentos")
-    private ResponseEntity<Object> getAgendamentos(){
-        return ResponseEntity.status(HttpStatus.OK).body(services.findAll());
+    public ResponseEntity<Object> getAgendamentos(){
+        return ResponseEntity.status(HttpStatus.OK).body(services.getAgendamento());
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/agendamentos/{data}")
-    private ResponseEntity<Object> getAgendamentos(@PathVariable  @NotNull LocalDate data){
-        return ResponseEntity.status(HttpStatus.OK).body(services.findByData(data));
+    public ResponseEntity<Object> getAgendamentos(@PathVariable @NotNull LocalDate data){
+        return ResponseEntity.status(HttpStatus.OK).body(services.getAgendamentoByDataHora(data));
     }
-
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/horarios/{data}")
-    private  ResponseEntity<Object> getHorarios(@PathVariable @NotNull LocalDate data){
-        return  ResponseEntity.status(HttpStatus.OK).body(services.horariosLivres(data));
+    public  ResponseEntity<Object> getHorarios(@PathVariable  LocalDate data){
+        return  ResponseEntity.status(HttpStatus.OK).body(services.getHorariosLivres(data));
     }
-
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/agendamentos")
-    private ResponseEntity<Object> postAgendamentos(@RequestBody @NotNull AgendamentoRecords data){
-        try {
-            Agendamentos agendamentos = new Agendamentos();
-            BeanUtils.copyProperties(data,agendamentos);
-            services.create(agendamentos);
-            return ResponseEntity.status(HttpStatus.CREATED).body(agendamentos);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-
-
+    public ResponseEntity<Object> postAgendamentos(@RequestBody @Valid AgendamentoRecords body){
+            Agendamento agendamento = body.toEntity();
+            services.addAgendamento(agendamento);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Agendamento criado!");
     }
-
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/agendamentos/{id}")
-    private ResponseEntity<Object> deleteAgendamentos(@PathVariable  @NotNull UUID id){
-        try {
-            services.deleteById(id);
+    public ResponseEntity<Object> deleteAgendamentos(@PathVariable  UUID id){
+            services.deleteAgendamento(id);
             return ResponseEntity.status(HttpStatus.OK).body("Agendamento exlcuido com sucesso!");
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
     }
 
 }

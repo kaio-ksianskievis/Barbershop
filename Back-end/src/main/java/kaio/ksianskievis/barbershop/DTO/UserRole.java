@@ -1,7 +1,6 @@
 package kaio.ksianskievis.barbershop.DTO;
 
-public enum UserRoles {
-
+public enum UserRole {
     USER,
     ADMIN
 }

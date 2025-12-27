@@ -2,14 +2,14 @@ package kaio.ksianskievis.barbershop.Model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Agendamentos {
+public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,9 +28,9 @@ public class Agendamentos {
     private String nomeCliente;
 
     @Column(nullable = false)
-    private LocalDate data;
+    private LocalDateTime dataHora;
 
     @Column(nullable = false)
-    private LocalTime horario;
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
 }
