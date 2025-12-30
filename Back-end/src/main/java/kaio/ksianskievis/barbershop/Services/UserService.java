@@ -1,6 +1,6 @@
 package kaio.ksianskievis.barbershop.Services;
 
-import kaio.ksianskievis.barbershop.DTO.UserResponse;
+import kaio.ksianskievis.barbershop.DTO.UserResponseRecord;
 import kaio.ksianskievis.barbershop.Exception.RegraDeNegocioException;
 import kaio.ksianskievis.barbershop.Model.User;
 import kaio.ksianskievis.barbershop.Repository.UserRepository;
@@ -23,14 +23,14 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<UserResponse> getUser(){
-        List<UserResponse> busca = repository.findAll().stream().map(UserResponse::new).toList();
+    public List<UserResponseRecord> getUser(){
+        List<UserResponseRecord> busca = repository.findAll().stream().map(UserResponseRecord::new).toList();
         return  busca;
     }
 
-    public UserResponse getByemail(String email){
+    public UserResponseRecord getByemail(String email){
         User usuario = repository.findByEmail(email).orElseThrow(()-> new RegraDeNegocioException("Email não encontrado!"));
-        UserResponse novoUsuario =  new UserResponse(usuario);
+        UserResponseRecord novoUsuario =  new UserResponseRecord(usuario);
         return novoUsuario;
     }
 

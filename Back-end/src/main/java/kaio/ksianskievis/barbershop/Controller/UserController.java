@@ -2,9 +2,10 @@ package kaio.ksianskievis.barbershop.Controller;
 
 
 import jakarta.validation.Valid;
-import kaio.ksianskievis.barbershop.DTO.LoginRecord;
-import kaio.ksianskievis.barbershop.DTO.LoginResponse;
-import kaio.ksianskievis.barbershop.DTO.RegisterRecord;
+import kaio.ksianskievis.barbershop.DTO.LoginRequestRecord;
+import kaio.ksianskievis.barbershop.DTO.LoginResponseRecord;
+import kaio.ksianskievis.barbershop.DTO.RegisterRequestRecord;
+import kaio.ksianskievis.barbershop.DTO.UserResponseRecord;
 import kaio.ksianskievis.barbershop.Model.User;
 import kaio.ksianskievis.barbershop.Services.TokenService;
 import kaio.ksianskievis.barbershop.Services.UserService;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,13 +34,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/usuarios")
-    public ResponseEntity<Object> getUsuarios(){
+    public ResponseEntity<List<UserResponseRecord>> getUsuarios(){
         return ResponseEntity.status(HttpStatus.OK).body(service.getUser());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/usuarios/{email}")
-    public ResponseEntity<Object> getUsuariosByEmail(@PathVariable String email){
+    public ResponseEntity<UserResponseRecord> getUsuariosByEmail(@PathVariable String email){
         return ResponseEntity.status(HttpStatus.OK).body(service.getByemail(email));
     }
     @PreAuthorize("hasRole('ADMIN')")
@@ -49,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> addUser(@RequestBody @Valid RegisterRecord body){
+    public ResponseEntity<Object> addUser(@RequestBody @Valid RegisterRequestRecord body){
         User usuario = body.toEntity();
         service.addUser(usuario);
 
@@ -57,12 +59,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid LoginRecord data) {
+    public ResponseEntity<LoginResponseRecord> login(@RequestBody @Valid LoginRequestRecord data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(token));
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseRecord(token));
     }
 
 }

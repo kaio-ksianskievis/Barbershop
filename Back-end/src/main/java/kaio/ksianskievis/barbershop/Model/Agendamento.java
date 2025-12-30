@@ -24,8 +24,9 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String nomeCliente;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User cliente;
 
     @Column(nullable = false)
     private LocalDateTime dataHora;

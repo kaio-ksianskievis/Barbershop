@@ -1,8 +1,10 @@
 package kaio.ksianskievis.barbershop.Services;
 
 
+import kaio.ksianskievis.barbershop.DTO.AgendamentoResponseRecords;
 import kaio.ksianskievis.barbershop.Exception.RegraDeNegocioException;
 import kaio.ksianskievis.barbershop.Model.Agendamento;
+import kaio.ksianskievis.barbershop.Model.User;
 import kaio.ksianskievis.barbershop.Repository.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,15 +25,20 @@ public class AgendamentoServices {
     @Autowired
     private AgendamentoRepository repository;
 
-    public List<Agendamento> getAgendamento(){
-        List<Agendamento> busca = repository.findAll();
+    public List<AgendamentoResponseRecords> getAgendamento(){
+        List<AgendamentoResponseRecords> busca = repository.findAll().stream().map(AgendamentoResponseRecords::new).toList();
         return busca;
     }
 
-    public List<Agendamento> getAgendamentoByDataHora(LocalDate data){
+    public List<AgendamentoResponseRecords> getAgendamentoByDataHora(LocalDate data){
         LocalDateTime inicio = data.atTime(0,0);
         LocalDateTime fim = data.atTime(23,59);
-        List<Agendamento> busca = repository.findByDataHoraBetweenOrderByDataHoraAsc(inicio,fim);
+        List<AgendamentoResponseRecords> busca = repository.findByDataHoraBetweenOrderByDataHoraAsc(inicio,fim).stream().map(AgendamentoResponseRecords::new).toList();
+        return busca;
+    }
+
+    public List<AgendamentoResponseRecords> getAgendamentoByUser(User user){
+        List<AgendamentoResponseRecords> busca = repository.findByClienteOrderByDataHoraDesc(user).stream().map(AgendamentoResponseRecords::new).toList();
         return busca;
     }
 

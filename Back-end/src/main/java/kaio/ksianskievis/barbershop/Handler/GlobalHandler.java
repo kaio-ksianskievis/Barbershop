@@ -1,7 +1,7 @@
 package kaio.ksianskievis.barbershop.Handler;
 
 
-import kaio.ksianskievis.barbershop.DTO.MensagemErro;
+import kaio.ksianskievis.barbershop.DTO.MensagemErroRecord;
 import kaio.ksianskievis.barbershop.Exception.RegraDeNegocioException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class GlobalHandler {
 
     @ExceptionHandler(RegraDeNegocioException.class)
     public ResponseEntity<Object> regraDeNegocio(RegraDeNegocioException e){
-        MensagemErro mensagemErro = new MensagemErro(HttpStatus.BAD_REQUEST.value(),e.getMessage(), LocalDateTime.now());
+        MensagemErroRecord mensagemErro = new MensagemErroRecord(HttpStatus.BAD_REQUEST.value(),e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagemErro);
     }
 
@@ -29,13 +29,13 @@ public class GlobalHandler {
 
         List<FieldError> listaErros = e.getBindingResult().getFieldErrors();
 
-        List<MensagemErro> mensagensDeErro = listaErros.stream().map(
-                erro -> new MensagemErro(status,erro.getDefaultMessage(),LocalDateTime.now())).toList();
+        List<MensagemErroRecord> mensagensDeErro = listaErros.stream().map(
+                erro -> new MensagemErroRecord(status,erro.getDefaultMessage(),LocalDateTime.now())).toList();
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagensDeErro);
     }
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> usernameNotFound(UsernameNotFoundException e){
-        MensagemErro mensagemErro = new MensagemErro(HttpStatus.BAD_REQUEST.value(),e.getMessage(), LocalDateTime.now());
+        MensagemErroRecord mensagemErro = new MensagemErroRecord(HttpStatus.BAD_REQUEST.value(),e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagemErro);
     }
 }

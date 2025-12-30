@@ -29,6 +29,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(nullable = false)
+    private String nomeCliente;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
