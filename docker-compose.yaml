@@ -12,17 +12,17 @@ services:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 20s
       retries: 10
-#  app:
-#    build:
-#      context: ./Back-end
-#      dockerfile: Dockerfile
-#    container_name: barbershop-app
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/barbershop_db
-#      SPRING_DATASOURCE_USERNAME: root
-#      SPRING_DATASOURCE_PASSWORD: root
+  app:
+    build:
+      context: ./Back-end
+      dockerfile: Dockerfile
+    container_name: barbershop-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/barbershop_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root

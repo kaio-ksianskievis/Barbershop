@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MailService mailService;
+
     public List<UserResponseRecord> getUser(){
         List<UserResponseRecord> busca = repository.findAll().stream().map(UserResponseRecord::new).toList();
         return  busca;
@@ -34,12 +38,25 @@ public class UserService implements UserDetailsService {
         return novoUsuario;
     }
 
-    public void addUser(User user){
+    public UserResponseRecord addUser(User user){
         if(repository.existsByEmail(user.getEmail())){
             throw new RegraDeNegocioException("Email já cadastrado!");
         }
+
+        SecureRandom secureRandom = new SecureRandom();
+        int code = secureRandom.nextInt(1000000);
+        String codigo = String.format("%06d",code);
+        System.out.println("CODIGO: "+codigo);
+        user.setCode(codigo);
+
+        mailService.sendEmail(user.getEmail(),codigo,user.getName());
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         repository.save(user);
+        UserResponseRecord response = new UserResponseRecord(user);
+
+        return  response;
     }
 
     public void deleteUser(UUID id){
@@ -47,6 +64,12 @@ public class UserService implements UserDetailsService {
         repository.delete(busca);
     }
 
+    public  void verifyCodeUser(String codigo){
+        User usuario = repository.findByCode(codigo).orElseThrow(()-> new RegraDeNegocioException("Código inválido"));
+        usuario.setStatus(true);
+        usuario.setCode(null);
+        repository.save(usuario);
+    }
     @Override
     public UserDetails loadUserByUsername(String email)  {
         return  repository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuário não encontrado!"));

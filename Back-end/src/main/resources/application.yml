@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: Barbershop
+  datasource:
+    url: jdbc:mysql://localhost:3306/barbershop_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: SEU EMAIL
+    password: SUA SENHA (NÃO É A MESMA DO EMAIL)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+              enable: true
+api:
+  security:
+    token:
+      secret: minha-senha-secreta-123

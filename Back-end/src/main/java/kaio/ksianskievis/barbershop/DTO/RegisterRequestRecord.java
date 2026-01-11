@@ -16,14 +16,15 @@ public record RegisterRequestRecord(
         @NotNull(message = "Role não pode ser nula!")
         UserRole role,
         @NotBlank(message = "Nome não pode ser nulo!")
-        String nomeCliente) {
+        String nome) {
 
     public User toEntity(){
         User usuarios = new User();
         usuarios.setPassword(this.password);
         usuarios.setEmail(this.email);
         usuarios.setRole(this.role);
-        usuarios.setNomeCliente(this.nomeCliente);
+        usuarios.setName(this.nome);
+        usuarios.setStatus(false);
         return usuarios;
     }
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "Agendamentos")
+@Table(name = "agendamentos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

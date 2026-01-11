@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public record AgendamentoResponseRecords(UUID id, String nomeCliente, UUID user_id, LocalDateTime dataHora, LocalDateTime dataCriacao) {
     public AgendamentoResponseRecords(Agendamento agendamento) {
-        this(agendamento.getId(), agendamento.getCliente().getNomeCliente(), agendamento.getCliente().getId(), agendamento.getDataHora(), agendamento.getDataCriacao());
+        this(agendamento.getId(), agendamento.getCliente().getName(), agendamento.getCliente().getId(), agendamento.getDataHora(), agendamento.getDataCriacao());
     }
 }

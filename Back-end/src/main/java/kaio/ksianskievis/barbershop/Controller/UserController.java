@@ -2,10 +2,7 @@ package kaio.ksianskievis.barbershop.Controller;
 
 
 import jakarta.validation.Valid;
-import kaio.ksianskievis.barbershop.DTO.LoginRequestRecord;
-import kaio.ksianskievis.barbershop.DTO.LoginResponseRecord;
-import kaio.ksianskievis.barbershop.DTO.RegisterRequestRecord;
-import kaio.ksianskievis.barbershop.DTO.UserResponseRecord;
+import kaio.ksianskievis.barbershop.DTO.*;
 import kaio.ksianskievis.barbershop.Model.User;
 import kaio.ksianskievis.barbershop.Services.TokenService;
 import kaio.ksianskievis.barbershop.Services.UserService;
@@ -49,13 +46,15 @@ public class UserController {
         service.deleteUser(id);
         return  ResponseEntity.status(HttpStatus.OK).body("Usuário Deletado");
     }
-
+    @PostMapping("/verify")
+    public ResponseEntity<Object> verifyUser(@RequestBody @Valid VerificationCode code){
+        service.verifyCodeUser(code.code());
+        return  ResponseEntity.status(HttpStatus.OK).body("Usuário verificado!");
+    }
     @PostMapping("/register")
-    public ResponseEntity<Object> addUser(@RequestBody @Valid RegisterRequestRecord body){
+    public ResponseEntity<UserResponseRecord> addUser(@RequestBody @Valid RegisterRequestRecord body){
         User usuario = body.toEntity();
-        service.addUser(usuario);
-
-        return  ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado!");
+        return  ResponseEntity.status(HttpStatus.CREATED).body(service.addUser(usuario));
     }
 
     @PostMapping("/login")

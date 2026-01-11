@@ -30,7 +30,13 @@ public class User implements UserDetails {
     private UserRole role;
 
     @Column(nullable = false)
-    private String nomeCliente;
+    private String name;
+
+    @Column(nullable = false)
+    private  Boolean status = false;
+
+    @Column(nullable = true)
+    private String code;
 
 
     @Override
@@ -62,7 +68,5 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() {return this.status;}
 }
