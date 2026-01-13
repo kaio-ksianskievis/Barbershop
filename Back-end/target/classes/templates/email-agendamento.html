@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmação de Agendamento</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+
+<div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+
+    <div style="background-color: #28a745; padding: 20px; text-align: center;">
+        <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Agendamento Confirmado!</h1>
+    </div>
+
+    <div style="padding: 30px;">
+        <p style="color: #555; font-size: 16px; margin-top: 0;">
+            Olá, <strong><span th:text="${nome}">Cliente</span></strong>.
+        </p>
+
+        <p style="color: #555; line-height: 1.5;">
+            Seu horário foi reservado com sucesso. Estamos te esperando!
+        </p>
+
+        <div style="background-color: #f8f9fa; border-left: 5px solid #28a745; padding: 20px; margin: 25px 0; border-radius: 4px;">
+
+            <p style="margin: 0 0 10px 0; color: #333;">
+                <strong style="color: #28a745; text-transform: uppercase; font-size: 12px;">Data</strong><br>
+                <span th:text="${dataAgendamento}" style="font-size: 18px; font-weight: bold;">13/10/2023</span>
+            </p>
+
+            <p style="margin: 0 0 10px 0; color: #333;">
+                <strong style="color: #28a745; text-transform: uppercase; font-size: 12px;">Horário</strong><br>
+                <span th:text="${horarioAgendamento}" style="font-size: 18px; font-weight: bold;">09:00</span>
+            </p>
+
+            <p style="margin: 0; color: #333;">
+                <strong style="color: #28a745; text-transform: uppercase; font-size: 12px;">Serviço</strong><br>
+                <span style="font-size: 16px;">Corte de cabelo</span>
+            </p>
+
+        </div>
+
+        <p style="color: #777; font-size: 14px; line-height: 1.5;">
+            Caso precise reagendar ou cancelar, por favor entre em contato com 24h de antecedência ou clique no botão abaixo.
+        </p>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="#" style="background-color: #555; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 14px;">
+                Meus Agendamentos
+            </a>
+        </div>
+    </div>
+
+    <div style="background-color: #eee; padding: 15px; text-align: center; font-size: 12px; color: #888;">
+        <p style="margin: 0;">Equipe Sua Empresa</p>
+    </div>
+
+</div>
+
+</body>
+</html>

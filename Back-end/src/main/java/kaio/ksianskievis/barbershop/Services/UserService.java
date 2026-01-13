@@ -1,6 +1,7 @@
 package kaio.ksianskievis.barbershop.Services;
 
 import kaio.ksianskievis.barbershop.DTO.UserResponseRecord;
+import kaio.ksianskievis.barbershop.DTO.VerificationCodeResponseRecord;
 import kaio.ksianskievis.barbershop.Exception.RegraDeNegocioException;
 import kaio.ksianskievis.barbershop.Model.User;
 import kaio.ksianskievis.barbershop.Repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -43,18 +45,20 @@ public class UserService implements UserDetailsService {
             throw new RegraDeNegocioException("Email já cadastrado!");
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         SecureRandom secureRandom = new SecureRandom();
         int code = secureRandom.nextInt(1000000);
         String codigo = String.format("%06d",code);
         System.out.println("CODIGO: "+codigo);
         user.setCode(codigo);
-
-        mailService.sendEmail(user.getEmail(),codigo,user.getName());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         repository.save(user);
         UserResponseRecord response = new UserResponseRecord(user);
+
+
+        Context context = new Context();
+        context.setVariable("nome",user.getName());
+        context.setVariable("codigoVerificacao",codigo);
+        mailService.sendEmail(user.getEmail(),"Seu código de verificação: "+ codigo,context,"email-verificacao");
 
         return  response;
     }
@@ -64,11 +68,12 @@ public class UserService implements UserDetailsService {
         repository.delete(busca);
     }
 
-    public  void verifyCodeUser(String codigo){
+    public VerificationCodeResponseRecord verifyCodeUser(String codigo){
         User usuario = repository.findByCode(codigo).orElseThrow(()-> new RegraDeNegocioException("Código inválido"));
         usuario.setStatus(true);
         usuario.setCode(null);
         repository.save(usuario);
+        return new VerificationCodeResponseRecord("email verificado!");
     }
     @Override
     public UserDetails loadUserByUsername(String email)  {

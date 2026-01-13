@@ -1,4 +1,6 @@
 package kaio.ksianskievis.barbershop.DTO;
 
-public record LoginResponseRecord(String token) {
+import java.time.Instant;
+
+public record LoginResponseRecord(String token, Instant expireAt,String issue) {
 }

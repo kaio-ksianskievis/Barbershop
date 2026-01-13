@@ -1,11 +1,15 @@
 package kaio.ksianskievis.barbershop.Services;
 
 
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 public class MailService {
@@ -13,16 +17,25 @@ public class MailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private SpringTemplateEngine springTemplateEngine;
+
     @Async
-    public void sendEmail(String to, String code,String username){
+    public void sendEmail(String destinatario, String subject, Context context,String nomeArquivo){
+
         try {
-            String message = "Olá "+username+" seu código de verificação é: "+code+"!";
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom("SEU EMAIL!");
-            simpleMailMessage.setTo(to);
-            simpleMailMessage.setSubject("Código de verificação");
-            simpleMailMessage.setText(message);
-            javaMailSender.send(simpleMailMessage);
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            String htmlContent = springTemplateEngine.process(nomeArquivo, context);
+            
+            helper.setTo(destinatario);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(message);
+
         }catch (Exception e){
             System.out.println(e.getMessage());
         }

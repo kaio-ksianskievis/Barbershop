@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import kaio.ksianskievis.barbershop.DTO.LoginResponseRecord;
 import kaio.ksianskievis.barbershop.Model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private  String key;
 
-    public String generateToken(User usuario){
+    public LoginResponseRecord generateToken(User usuario){
         try {
             Instant tempo = LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
             Algorithm algorithm = Algorithm.HMAC256(key);
@@ -29,7 +30,8 @@ public class TokenService {
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(tempo)
                     .sign(algorithm);
-            return  token;
+            LoginResponseRecord response = new LoginResponseRecord(token,tempo,"barbershop-api");
+            return  response;
         }catch(JWTCreationException e){
             throw  new RuntimeException("Erro ao gerar toke",e);
         }

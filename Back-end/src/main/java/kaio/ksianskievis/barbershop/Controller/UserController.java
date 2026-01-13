@@ -47,9 +47,8 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body("Usuário Deletado");
     }
     @PostMapping("/verify")
-    public ResponseEntity<Object> verifyUser(@RequestBody @Valid VerificationCode code){
-        service.verifyCodeUser(code.code());
-        return  ResponseEntity.status(HttpStatus.OK).body("Usuário verificado!");
+    public ResponseEntity<VerificationCodeResponseRecord> verifyUser(@RequestBody @Valid VerificationCodeRequestRecord obj){
+        return  ResponseEntity.status(HttpStatus.OK).body(service.verifyCodeUser(obj.code()));
     }
     @PostMapping("/register")
     public ResponseEntity<UserResponseRecord> addUser(@RequestBody @Valid RegisterRequestRecord body){
@@ -63,7 +62,7 @@ public class UserController {
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseRecord(token));
+        return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 
 }

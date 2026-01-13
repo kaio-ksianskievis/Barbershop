@@ -18,7 +18,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: SEU EMAIL
-    password: SUA SENHA (NÃO É A MESMA DO EMAIL)
+    password: SUA SENHA GERADA
     properties:
       mail:
         smtp:

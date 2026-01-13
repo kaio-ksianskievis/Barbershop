@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificação de Email</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+
+<div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #ddd;">
+
+    <h2 style="color: #333; text-align: center; margin-top: 0;">Confirme seu Email</h2>
+
+    <p style="color: #555; font-size: 16px;">
+        Olá, <strong><span th:text="${nome}">Usuario</span></strong>.
+    </p>
+
+    <p style="color: #555; font-size: 16px;">
+        Use o código abaixo para concluir a verificação da sua conta. Este código expira em 10 minutos.
+    </p>
+
+    <div style="background-color: #f8f9fa; border: 2px dashed #007bff; padding: 15px; text-align: center; margin: 25px 0; border-radius: 6px;">
+            <span th:text="${codigoVerificacao}"
+                  style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #007bff; font-family: 'Courier New', monospace;">
+                123456
+            </span>
+    </div>
+
+    <p style="color: #999; font-size: 14px; text-align: center;">
+        Se você não solicitou este código, ignore este email.
+    </p>
+
+</div>
+
+</body>
+</html>

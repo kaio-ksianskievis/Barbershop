@@ -8,11 +8,13 @@ import kaio.ksianskievis.barbershop.Model.User;
 import kaio.ksianskievis.barbershop.Repository.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +26,9 @@ public class AgendamentoServices {
 
     @Autowired
     private AgendamentoRepository repository;
+
+    @Autowired
+    private  MailService mailService;
 
     public List<AgendamentoResponseRecords> getAgendamento(){
         List<AgendamentoResponseRecords> busca = repository.findAll().stream().map(AgendamentoResponseRecords::new).toList();
@@ -42,7 +47,7 @@ public class AgendamentoServices {
         return busca;
     }
 
-    public void addAgendamento(Agendamento obj){
+    public AgendamentoResponseRecords addAgendamento(Agendamento obj){
         LocalDateTime dataHoraSolicitada = obj.getDataHora();
         LocalDate dataSolicitada = dataHoraSolicitada.toLocalDate();
 
@@ -62,7 +67,25 @@ public class AgendamentoServices {
         if(repository.existsByDataHoraBetween(inicio,fim)){
             throw  new RegraDeNegocioException("Horário indisponível!");
         }
+
         repository.save(obj);
+
+        AgendamentoResponseRecords response = new AgendamentoResponseRecords(obj);
+
+        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatadorHora = DateTimeFormatter.ofPattern("HH:mm");
+
+        String dataFormatada = obj.getDataHora().format(formatadorData); // Ex: 12/01/2026
+        String horaFormatada = obj.getDataHora().format(formatadorHora); // Ex: 19:30
+
+        Context context = new Context();
+        context.setVariable("nome",obj.getCliente().getName());
+        context.setVariable("dataAgendamento",dataFormatada);
+        context.setVariable("horarioAgendamento",horaFormatada);
+
+        mailService.sendEmail(obj.getCliente().getEmail(),"Confirmação de Agendamneto",context,"email-agendamento");
+
+        return response;
     }
     public void deleteAgendamento(UUID id){
         Agendamento agendamento = repository.findById(id).orElseThrow(()-> new RegraDeNegocioException("Agendamento não encontrado!") );

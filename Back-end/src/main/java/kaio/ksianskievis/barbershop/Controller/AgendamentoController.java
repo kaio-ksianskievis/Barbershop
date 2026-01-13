@@ -49,11 +49,10 @@ public class AgendamentoController {
     }
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/agendamentos")
-    public ResponseEntity<Object> postAgendamentos(@RequestBody @Valid AgendamentoRequestRecords body, @AuthenticationPrincipal User user){
+    public ResponseEntity<AgendamentoResponseRecords> postAgendamentos(@RequestBody @Valid AgendamentoRequestRecords body, @AuthenticationPrincipal User user){
             Agendamento agendamento = body.toEntity();
             agendamento.setCliente(user);
-            services.addAgendamento(agendamento);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Agendamento criado!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(services.addAgendamento(agendamento));
     }
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/agendamentos/{id}")
