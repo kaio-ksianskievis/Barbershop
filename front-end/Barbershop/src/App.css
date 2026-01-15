@@ -1,0 +1,133 @@
+/* Container que envolve as telas de Login/Cadastro */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* A caixa branca (Card) */
+.login-box, .register-container {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+/* Estilo dos campos de entrada */
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  box-sizing: border-box; /* Garante que o padding não estoure a largura */
+}
+
+input:focus {
+  outline: none;
+  border-color: #2c3e50;
+}
+
+/* Botão principal (Escuro) */
+button.login-btn, button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #333;
+}
+
+/* Links e botões secundários */
+.auth-footer {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.secondary-btn, .link-btn {
+  background: none;
+  border: none;
+  color: #3498db;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Dashboard após o login */
+.dashboard {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  text-align: center;
+}
+.grid-horarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.hora-btn {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.agendamento-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}

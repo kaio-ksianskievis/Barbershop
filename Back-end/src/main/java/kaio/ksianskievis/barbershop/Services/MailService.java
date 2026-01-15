@@ -29,7 +29,7 @@ public class MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             String htmlContent = springTemplateEngine.process(nomeArquivo, context);
-            
+
             helper.setTo(destinatario);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);

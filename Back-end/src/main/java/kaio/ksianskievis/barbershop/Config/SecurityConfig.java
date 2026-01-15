@@ -29,6 +29,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
         return httpSecurity.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(java.util.List.of("http://localhost:5173")); // Porta do Vite
+                    corsConfiguration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
+                    corsConfiguration.setAllowedHeaders(java.util.List.of("*"));
+                    return corsConfiguration;
+                }))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->auth.requestMatchers("/login","/register","/verify","/v3/api-docs/**",
                         "/swagger-ui/**",
